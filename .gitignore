@@ -1,4 +1,5 @@
 proj/
+venv/
 .env
 document/
 db/
