@@ -84,7 +84,10 @@ def create_course_agent_cached(course_code):
 def get_ai_response(user_input, course_code):
     if f'agent_{course_code}' not in st.session_state:
         with st.spinner("Creating AI Tutor..."):
-            agent = create_course_agent(course_code)
+            if st.session_state['use_cache']:
+                agent = create_course_agent_cached(course_code)
+            else:
+                agent = create_course_agent(course_code)
         st.session_state[f'agent_{course_code}'] = agent
     current_agent = st.session_state[f'agent_{course_code}']
     with st.spinner("Thinking..."):
@@ -318,7 +321,10 @@ def main():
     if course_code:
         if f'agent_{course_code}' not in st.session_state:
             with st.spinner("Loading AI Tutor..."):
-                agent = create_course_agent(course_code)
+                if st.session_state['use_cache']:
+                    agent = create_course_agent_cached(course_code)
+                else:
+                    agent = create_course_agent(course_code)
             st.session_state[f'agent_{course_code}'] = agent
     if st.session_state['page'] == 'input':
         show_input_form()

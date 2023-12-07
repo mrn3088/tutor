@@ -27,6 +27,7 @@ debugpy==1.8.0
 decorator==5.1.1
 Deprecated==1.2.14
 distro==1.8.0
+dnspython==2.4.2
 effdet==0.4.1
 emoji==2.9.0
 executing==2.0.1
@@ -113,6 +114,7 @@ pydantic==2.5.2
 pydantic_core==2.14.5
 pydeck==0.8.1b0
 Pygments==2.17.2
+pymongo==4.6.1
 pyparsing==3.1.1
 pypdf==3.17.1
 PyPDF2==3.0.1
