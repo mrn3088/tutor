@@ -1,8 +1,15 @@
-import streamlit as st
 import os
-import json
+import streamlit as st
+
+
 from api import check_course_exists, get_all_courses
 from model import get_agent
+from pymongo import MongoClient
+from dao import get_course_config, update_course_config
+
+client = MongoClient('mongodb://localhost:27017/')
+db = client.tutor
+courses_collection = db.courses
 
 
 def add_custom_css():
@@ -19,34 +26,31 @@ def add_custom_css():
 
 @st.cache_resource
 def create_course_agent(course_code):
-    course_path = os.path.join('document', course_code)
-
-    with open(os.path.join(course_path, 'config.json'), 'r') as json_file:
-        course_config = json.load(json_file)
-        file_categories = {
-            'slides': course_config['uploaded_files'].get('slides', []),
-            'assignments': course_config['uploaded_files'].get('assignments', []),
-            'syllabus': course_config['uploaded_files'].get('syllabus', [])
-        }
-        print(file_categories['slides'])
-        print(file_categories['assignments'])
-        print(file_categories['syllabus'])
-        system_prompt = course_config['system_prompt'] if 'system_prompt' in course_config else ''
-        agent = get_agent(
-            [os.path.join('document', course_code, file)
-             for file in file_categories['slides']],
-            [os.path.join('document', course_code, file)
-             for file in file_categories['assignments']],
-            [os.path.join('document', course_code, file)
-             for file in file_categories['syllabus']],
-            os.path.join('db', f'{course_code}_slides_index'),
-            os.path.join('db', f'{course_code}_homework_index'),
-            os.path.join('db', f'{course_code}_syllabus_index'),
-            course_code=course_code,
-            course_title=course_config['course_description'],
-            instructor_prompt=system_prompt,
-        )
-        return agent
+    course_config = get_course_config(courses_collection, course_code)
+    file_categories = {
+        'slides': course_config['uploaded_files'].get('slides', []),
+        'assignments': course_config['uploaded_files'].get('assignments', []),
+        'syllabus': course_config['uploaded_files'].get('syllabus', [])
+    }
+    print(file_categories['slides'])
+    print(file_categories['assignments'])
+    print(file_categories['syllabus'])
+    system_prompt = course_config['system_prompt'] if 'system_prompt' in course_config else ''
+    agent = get_agent(
+        [os.path.join('document', course_code, file)
+         for file in file_categories['slides']],
+        [os.path.join('document', course_code, file)
+         for file in file_categories['assignments']],
+        [os.path.join('document', course_code, file)
+         for file in file_categories['syllabus']],
+        os.path.join('db', f'{course_code}_slides_index'),
+        os.path.join('db', f'{course_code}_homework_index'),
+        os.path.join('db', f'{course_code}_syllabus_index'),
+        course_code=course_code,
+        course_title=course_config['course_description'],
+        instructor_prompt=system_prompt,
+    )
+    return agent
 
 
 def get_ai_response(user_input, course_code):
@@ -55,7 +59,6 @@ def get_ai_response(user_input, course_code):
             agent = create_course_agent(course_code)
         st.session_state[f'agent_{course_code}'] = agent
     current_agent = st.session_state[f'agent_{course_code}']
-    resp = None
     with st.spinner("Thinking..."):
         resp = current_agent.chat(user_input)
     return resp
@@ -64,9 +67,7 @@ def get_ai_response(user_input, course_code):
 def show_update_course_form(course_code):
     st.title(f"Update Course: {course_code}")
     course_path = os.path.join('document', course_code)
-    with open(os.path.join(course_path, 'config.json'), 'r') as json_file:
-        course_config = json.load(json_file)
-
+    course_config = get_course_config(courses_collection, course_code)
     st.subheader("Existing Files")
     for category, files in course_config['uploaded_files'].items():
         st.markdown(f"**{category.title()}**")
@@ -75,8 +76,8 @@ def show_update_course_form(course_code):
             col1.markdown(file)
             if col2.button(f"Delete {file}", key=f"delete_{file}_{category}"):
                 course_config['uploaded_files'][category].remove(file)
-                with open(os.path.join(course_path, 'config.json'), 'w') as json_file:
-                    json.dump(course_config, json_file, indent=4)
+                update_course_config(courses_collection,
+                                     course_code, course_config)
                 st.rerun()
     st.subheader("Upload New Files")
     new_slides = st.file_uploader("Upload Course Slides (PDF, PPT)",
@@ -107,8 +108,7 @@ def show_update_course_form(course_code):
                         f"File {file.name} already exists in {category}.")
 
     if st.button(f"Update Course_{course_code}"):
-        with open(os.path.join(course_path, 'config.json'), 'w') as json_file:
-            json.dump(course_config, json_file, indent=4)
+        update_course_config(courses_collection, course_code, course_config)
         st.success("Course updated successfully!")
 
 
@@ -163,8 +163,7 @@ def on_submit(action):
             'system_prompt': course_system_prompt
         }
 
-        with open(os.path.join(save_path, 'config.json'), 'w') as json_file:
-            json.dump(config_data, json_file, indent=4)
+        update_course_config(courses_collection, course_code, config_data)
         st.session_state['page'] = 'chat'
 
 
@@ -179,28 +178,25 @@ def show_input_form():
         "Instructor Prompt")
 
     st.session_state['input_uploaded_slides'] = st.file_uploader(
-        "Upload Course Slides (PDF, PPT)", accept_multiple_files=True, key="slides")
+        "Upload Course Slides (PDF, HTML, TXT)", accept_multiple_files=True, key="slides")
     st.session_state['input_uploaded_assignments'] = st.file_uploader(
-        "Upload Course Assignments (PDF, DOC)", accept_multiple_files=True, key="assignments")
+        "Upload Course Assignments (PDF, HTML, TXT)", accept_multiple_files=True, key="assignments")
     st.session_state['input_uploaded_syllabus'] = st.file_uploader(
-        "Upload Course Syllabus (PDF)", accept_multiple_files=True, key="syllabus")
+        "Upload Course Syllabus (PDF, HTML, TXT)", accept_multiple_files=True, key="syllabus")
 
-    create_button = st.button(
-        'Create Course', on_click=on_submit, args=('create',))
+    st.button('Create Course', on_click=on_submit, args=('create',))
 
 
 def show_chat(course_code):
-    st.title("AI Tutor Chat for " + course_code)   
-    course_path = os.path.join('document', course_code)
-    with open(os.path.join(course_path, 'config.json'), 'r') as json_file:
-        course_config = json.load(json_file)
-        historical_messages = course_config.get("messages", [])
+    st.title("AI Tutor Chat for " + course_code)
+    course_config = get_course_config(courses_collection, course_code)
+    historical_messages = course_config.get("messages", [])
 
     for message in historical_messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-    chat_input = st.text_input("Your prompt", key='chat_input')
-    submit_chat = st.button('Chat!', on_click=handle_chat_input)
+    st.text_input("Your prompt", key='chat_input')
+    st.button('Chat!', on_click=handle_chat_input)
 
     if st.button("Clear Chat History"):
         delete_chat_history(course_code)
@@ -215,29 +211,17 @@ def show_chat(course_code):
 
 
 def add_message(course_code, role, content):
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-    st.session_state.messages.append({"role": role, "content": content})
-
-    course_path = os.path.join('document', course_code)
-    with open(os.path.join(course_path, 'config.json'), 'r+') as json_file:
-        course_config = json.load(json_file)
-        if "messages" not in course_config:
-            course_config["messages"] = []
-        course_config["messages"].append({"role": role, "content": content})
-        json_file.seek(0)
-        json.dump(course_config, json_file, indent=4)
-        json_file.truncate()
+    course_config = get_course_config(courses_collection, course_code)
+    if "messages" not in course_config:
+        course_config["messages"] = []
+    course_config["messages"].append({"role": role, "content": content})
+    update_course_config(courses_collection, course_code, course_config)
 
 
 def delete_chat_history(course_code):
-    course_path = os.path.join('document', course_code)
-    with open(os.path.join(course_path, 'config.json'), 'r+') as json_file:
-        course_config = json.load(json_file)
-        course_config["messages"] = []
-        json_file.seek(0)
-        json.dump(course_config, json_file, indent=4)
-        json_file.truncate()
+    course_config = get_course_config(courses_collection, course_code)
+    course_config["messages"] = []
+    update_course_config(courses_collection, course_code, course_config)
 
 
 def handle_chat_input():

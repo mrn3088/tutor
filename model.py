@@ -72,7 +72,6 @@ def get_index(input_files, save_dir):
         file_extractor={
             ".pdf": UnstructuredReader(),
             ".html": UnstructuredReader(),
-            ".eml": UnstructuredReader(),
             ".txt": UnstructuredReader(),
         }
     ).load_data()
