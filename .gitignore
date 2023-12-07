@@ -1,0 +1,7 @@
+proj/
+.env
+document/
+db/
+cse123/
+lign101/
+__pycache__/
