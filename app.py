@@ -1,4 +1,5 @@
 import os
+import shutil
 import streamlit as st
 
 
@@ -24,7 +25,6 @@ def add_custom_css():
         """, unsafe_allow_html=True)
 
 
-@st.cache_resource
 def create_course_agent(course_code):
     course_config = get_course_config(courses_collection, course_code)
     file_categories = {
@@ -44,7 +44,35 @@ def create_course_agent(course_code):
         [os.path.join('document', course_code, file)
          for file in file_categories['syllabus']],
         os.path.join('db', f'{course_code}_slides_index'),
-        os.path.join('db', f'{course_code}_homework_index'),
+        os.path.join('db', f'{course_code}_assignments_index'),
+        os.path.join('db', f'{course_code}_syllabus_index'),
+        course_code=course_code,
+        course_title=course_config['course_description'],
+        instructor_prompt=system_prompt,
+    )
+    return agent
+
+@st.cache_resource
+def create_course_agent_cached(course_code):
+    course_config = get_course_config(courses_collection, course_code)
+    file_categories = {
+        'slides': course_config['uploaded_files'].get('slides', []),
+        'assignments': course_config['uploaded_files'].get('assignments', []),
+        'syllabus': course_config['uploaded_files'].get('syllabus', [])
+    }
+    print(file_categories['slides'])
+    print(file_categories['assignments'])
+    print(file_categories['syllabus'])
+    system_prompt = course_config['system_prompt'] if 'system_prompt' in course_config else ''
+    agent = get_agent(
+        [os.path.join('document', course_code, file)
+         for file in file_categories['slides']],
+        [os.path.join('document', course_code, file)
+         for file in file_categories['assignments']],
+        [os.path.join('document', course_code, file)
+         for file in file_categories['syllabus']],
+        os.path.join('db', f'{course_code}_slides_index'),
+        os.path.join('db', f'{course_code}_assignments_index'),
         os.path.join('db', f'{course_code}_syllabus_index'),
         course_code=course_code,
         course_title=course_config['course_description'],
@@ -76,6 +104,14 @@ def show_update_course_form(course_code):
             col1.markdown(file)
             if col2.button(f"Delete {file}", key=f"delete_{file}_{category}"):
                 course_config['uploaded_files'][category].remove(file)
+                # if the index exists, remove it
+                index_path = os.path.join(
+                    'db', f"{course_code}_{category}_index")
+                if os.path.exists(index_path):
+                    shutil.rmtree(index_path)
+                # remove agent 
+                if f'agent_{course_code}' in st.session_state:
+                    del st.session_state[f'agent_{course_code}']
                 update_course_config(courses_collection,
                                      course_code, course_config)
                 st.rerun()
@@ -95,6 +131,15 @@ def show_update_course_form(course_code):
 
     for category, files in new_files.items():
         if files is not None:
+            if len(files) > 0:
+                # remove the old index
+                index_path = os.path.join(
+                    'db', f"{course_code}_{category}_index")
+                if os.path.exists(index_path):
+                    shutil.rmtree(index_path)
+                # remove agent
+                if f'agent_{course_code}' in st.session_state:
+                    del st.session_state[f'agent_{course_code}']
             for file in files:
                 file_path = os.path.join(course_path, file.name)
                 if file.name not in course_config['uploaded_files'].get(category, []):
@@ -162,7 +207,7 @@ def on_submit(action):
             'uploaded_files': uploaded_files_info,
             'system_prompt': course_system_prompt
         }
-
+        print(config_data)
         update_course_config(courses_collection, course_code, config_data)
         st.session_state['page'] = 'chat'
 
@@ -201,7 +246,8 @@ def show_chat(course_code):
     if st.button("Clear Chat History"):
         delete_chat_history(course_code)
         if f'agent_{course_code}' in st.session_state:
-            st.session_state[f'agent_{course_code}'].reset()
+            del st.session_state[f'agent_{course_code}']
+            # st.session_state[f'agent_{course_code}'].reset()
         st.session_state.messages = []
         st.rerun()
 
@@ -243,6 +289,9 @@ def main():
 
     with st.sidebar:
         st.title("Courses")
+        st.markdown("## Cache Settings")
+        use_cache = st.checkbox("Enable Cache", value=True)
+        st.session_state['use_cache'] = use_cache
         st.markdown("## Create New Course")
         if st.button("Click Me!"):
             st.session_state['page'] = 'input'

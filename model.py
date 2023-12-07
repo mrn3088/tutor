@@ -10,6 +10,7 @@ from llama_index.node_parser import SentenceWindowNodeParser
 from llama_index.embeddings import OpenAIEmbedding
 from llama_index.agent import OpenAIAgent
 
+
 import os
 import openai
 from dotenv import load_dotenv
@@ -88,6 +89,8 @@ def get_index(input_files, save_dir):
 
 def get_agent(slide_inputs, homework_inputs, syllabus_inputs, slide_index_dir, homework_index_dir, syllabus_index_dir, course_code, course_title, instructor_prompt=""):
     tools = []
+    print(slide_inputs, homework_inputs, syllabus_inputs)
+    print(slide_index_dir, homework_index_dir, syllabus_index_dir)
     if len(slide_inputs) != 0:
         slide_index = get_index(input_files=slide_inputs,
                                 save_dir=slide_index_dir)
@@ -148,15 +151,3 @@ def get_agent(slide_inputs, homework_inputs, syllabus_inputs, slide_index_dir, h
         model="gpt-4"), system_prompt=SYSTEM_PROMPT, verbose=True)
     return agent
 
-
-if __name__ == "__main__":
-    agent = get_agent(['./cse123/slides/' + f for f in os.listdir(
-        './cse123/slides') if f.endswith('.pdf')], ['./cse123/homeworks/' + f for f in os.listdir(
-            './cse123/homeworks') if f.endswith('.pdf')], ['./cse123/syllabus/' + f for f in os.listdir(
-                './cse123/syllabus') if f.endswith('.html')], "./db/cse123_slides_index", "./db/cse123_homework_index", "./db/cse123_syllabus_index", "CSE 123", "Computer Networks")
-    while True:
-        text_input = input("User: ")
-        if text_input == "exit":
-            break
-        response = agent.chat(text_input)
-        print(f"Agent: {response}")

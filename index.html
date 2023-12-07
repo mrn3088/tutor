@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CSE 120: Principles of Computer Operating Systems</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+</head>
+
+<body class="main">
+
+<h1>CSE 120: Principles of Computer Operating Systems</h1>
+<h2 class="h1sub">Spring 2023</h2>
+
+
+<p>
+
+<dl>
+<dt><b>Instructor</b>
+<dd>
+  <a class=bluelink href="https://amyousterhout.com">Amy Ousterhout</a>
+  (<a class=bluelink href="mailto:aousterhout@ucsd.edu?subject=CSE 120">aousterhout@ucsd.edu</a>)<br>
+  Office Hour: Fri 2&ndash;3pm (CSE 3130)<br>
+
+<dt><b>Lectures</b>
+<dd>
+  Tu/Th 3:30&ndash;4:50pm in <a href="https://map.concept3d.com/?id=1005#!m/610083">Franklin Antonio Hall 1450</a><br>
+
+<dt><b>TAs and Tutors</b>
+<dd>
+  <table id="tatutors">
+    <tr>
+      <td>Charlotte Tang</td>
+      <td>Yunxiang Chi</td>
+    </tr>
+    <tr>
+      <td>Kaiyuan Wang</td>
+      <td>Yuke Liu</td>
+    </tr>
+    <tr>
+      <td>Fengyuan Wu</td>
+      <td>Xiyan Shao</td>
+    </tr>
+    <tr>
+      <td>Steven Wu</td>
+      <td>&nbsp;</td>
+    </tr>
+  </table>
+
+
+<dt><b>Discussion Section</b>
+  <dd>
+    Fri 4&ndash;4:50pm in <a href="https://map.concept3d.com/?id=1005#!s/CENTR_Main?ct/18312">Center Hall 214</a><br>
+
+<dt><b>TA/Tutor Lab Hours</b>
+  <dd><a href="https://calendar.google.com/calendar/u/1?cid=Y19kNmZhZTQ3NWE1OTgyMWNmY2E2NTExNTJiNDEwMjdkODY2ZWMwYTA4ZDRlNDM5MjJjMjRmNWJjNmQyOTgwZjhkQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20">Calendar</a> (CSE Basement)
+
+<dt><b>Discussion Board</b>
+  <dd><a href="https://piazza.com/ucsd/spring2023/cse120">Piazza</a>
+
+<dt><b>Announcements and Grading</b>
+  <dd><a href="https://canvas.ucsd.edu/courses/44984">Canvas</a>
+    
+<dt><b>Textbook</b>
+<dd>
+<table>
+<tr><td style="padding-right: 10px">
+<a href="http://pages.cs.wisc.edu/~remzi/OSTEP/"><img border=0 src="img/three-easy-thm.jpg" align=top></a>
+</td>
+<td>Remzi H. Arpaci-Dusseau and Andrea C. Arpaci-Dusseau<br>
+<a href="http://www.ostep.org/"><i>Operating Systems: Three Easy Pieces</i></a><br>
+Version 1.00 &nbsp; (Available <i>free</i> online!)
+</td></tr>
+</table>
+
+</dl>
+
+<h2>Course Objectives</h2>
+
+<p> This course covers the principles of operating systems.  It
+emphasizes the basic concepts of OS kernel organization and structure,
+processes and threads, concurrency and synchronization, memory
+management, file systems, and communication.  It is also a project
+course, providing essential experience in programming with
+concurrency, implementing and unmasking abstractions, working within
+an existing complex system, and collaborating with other students in a
+  group effort.
+
+<h2>Course Schedule</h2>
+
+<p> The following table outlines the schedule for the course.  We will update it as the quarter progresses.
+<p> The optional readings include primary sources and in-depth supplements for concepts in the class. Supplemental reading is for your own interest — the readings are not required, nor will you be tested on the material. Note that some of the links to the documents point to the ACM Digital Library. UCSD has a subscription to the ACM Digital Library, so you can access these links from a web browser on campus.
+
+<p>
+<center>
+<table id="sched">
+
+<tr>
+<th>Date</th>
+<th>Lecture</th>
+<th>Readings</th>
+<th>Optional Readings</th>
+<th>Homework</th>
+<th class="proj">Project</th>
+</tr>
+
+<tr>
+  <td align=center>Tu 4/4</td>
+  <td><a href="slides/lec1_intro.pdf">Course Intro</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/dialogue-threeeasy.pdf">CH. 1</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/intro.pdf">CH. 2</a></td>
+  <td><a href="https://dsf.berkeley.edu/cs262/unix.pdf">The UNIX Time-Sharing System</a></td>
+  <td><a href="hw/hw1.html">HW 1: Out</a></td>
+  <td><a href="projects/project0.html">PR 0: Out</a></td>
+</tr>
+
+<tr>
+  <td align=center>Th 4/6</td>
+  <td><a href="slides/lec2_hardware.pdf">Interactions with Apps and Hardware</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-mechanisms.pdf">CH. 6</a></td>
+  <td>
+    <a href="https://www.maizure.org/projects/evolution_x86_context_switch_linux/index.html">Linux context switch</a><br>
+    <a href="https://sigops.org/s/conferences/hotos/2021/papers/hotos21-s01-humphries.pdf">A Case Against (Most) Context Switches</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Tu 4/11</td>
+  <td><a href="slides/lec3_processes.pdf">Processes</a></td>
+  <td>
+    <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/dialogue-virtualization.pdf">CH. 3</a>,
+    <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-intro.pdf">CH. 4</a>,
+    <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-api.pdf">CH. 5</a></td></td>
+<td><a href="https://www.microsoft.com/en-us/research/uploads/prod/2019/04/fork-hotos19.pdf">A fork() in the road</a></td>
+  <td>&nbsp;</td>
+  <td><span class="due">PR 0: Due</span><br><a href="projects/project1.html">PR 1: Out</a></td>
+</tr>
+
+<tr>
+  <td align=center>Th 4/13</td>
+  <td><a href="slides/lec4_threads.pdf">Threads</a></td>
+  <td>
+    <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-intro.pdf">CH. 26</a>,
+    <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-api.pdf">CH. 27</a></td>
+  <td><a href="https://medium.com/@ankur_anand/illustrated-tales-of-go-runtime-scheduler-74809ef6d19b">Illustrated Tales of Go Runtime Scheduler</a><br>
+    <a href="https://www.scs.stanford.edu/~dm/blog/c++-coroutines.html">C++ Coroutine Tutorial</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Tu 4/18</td>
+  <td><a href="slides/lec5_synchronization.pdf">Synchronization</a></td>
+  <td>
+    <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks.pdf">CH. 28</a>,
+    <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks-usage.pdf">CH. 29</a</td>
+  <td><a href="https://pdos.csail.mit.edu/6.828/2020/readings/rcu-decade-later.pdf">RCU Usage In the Linux Kernel: One Decade Later</a></td>
+  <td><span class="due">HW 1: Due</span><br><a href="hw/hw2.html">HW 2: Out</a></td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Th 4/20</td>
+  <td><a href="slides/lec6_semaphores.pdf">Semaphores</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-sema.pdf">CH. 31</a></td>
+  <td><a href="https://dl.acm.org/doi/10.1145/800001.811672">The Structure of the 'THE'-Multiprogramming System</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Tu 4/25</td>
+  <td><a href="slides/lec7_condvars_deadlock.pdf">Condition Variables and Deadlock</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf">CH. 30</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/threads-bugs.pdf">CH. 32</a></td>
+  <td><a href="https://cseweb.ucsd.edu/~yiying/GoStudy-ASPLOS19.pdf">Understanding Real-World Concurrency Bugs in Go</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Th 4/27</td>
+  <td><a href="slides/lec8_scheduling.pdf">CPU Scheduling</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched.pdf">CH. 7</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/cpu-sched-mlfq.pdf">CH. 8</a></a></td>
+  <td><a href="https://www.usenix.org/legacy/publications/library/proceedings/osdi/full_papers/waldspurger.pdf">Lottery Scheduling: Flexible Proportional-Share Resource Management</a><br><a href="https://amyousterhout.com/papers/shenango_nsdi19.pdf">Shenango: Achieving High CPU Efficiency for Latency-sensitive Datacenter Workloads</a></td>
+  <td>&nbsp;</td>
+  <td><a href="projects/project2.html">PR 2: Out</a></td>
+</tr>
+
+<tr>
+  <td align=center>Tu 5/2</td>
+  <td><a href="slides/lec9_midterm_review.pdf">Midterm Review</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td><span class="due">HW 2: Due</span><br><a href="hw/hw3.html">HW 3: Out</a></td>
+  <td><span class="due">PR 1: Due</span></td>
+</tr>
+
+<tr>
+  <td align=center>Th 5/4</td>
+  <td bgcolor="#F5F0E6">Midterm Exam</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Tu 5/9</td>
+  <td><a href="slides/lec10_memory.pdf">Memory Management Overview</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-mechanism.pdf">CH. 15</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-segmentation.pdf">CH. 16</a></a></td>
+  <td><a href="https://homes.cs.washington.edu/~luisceze/publications/vmstudy-uwtr2013.pdf">A Study of Virtual Memory Usage and Implications for Large Memory</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Th 5/11</td>
+  <td><a href="slides/lec11_paging.pdf">Paging</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-paging.pdf">CH. 18</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-tlbs.pdf">CH. 19</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-smalltables.pdf">CH. 20</a></td>
+  <td><a href="https://dl.acm.org/doi/pdf/10.1145/3373376.3378468">Mitosis: Transparently Self-Replicating Page-Tables for Large-Memory Machines</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Tu 5/16</td>
+  <td><a href="slides/lec12_tlbs_swapping.pdf">TLBs, Swapping</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys.pdf">CH. 21</a></td>
+  <td><a href="https://www.usenix.org/system/files/conference/osdi16/osdi16-kwon.pdf">Coordinated and Efficient Huge Page Management with Ingens</a></td>
+  <td>&nbsp;</td>
+  <td><a href="projects/project3.html">PR 3: Out</a></td>
+</tr>
+
+<tr>
+  <td align=center>Th 5/18</td>
+  <td><a href="slides/lec13_replacement_alloc.pdf">Page Replacement and Memory Allocation</a></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-freespace.pdf">CH. 17</a>, <a href="http://pages.cs.wisc.edu/~remzi/OSTEP/vm-beyondphys-policy.pdf">CH. 22</a></td>
+  <td><a href="https://storage.googleapis.com/pub-tools-public-publication-data/pdf/cb7b7a938ac6d313a2b5f07612093b5c52093f51.pdf">Learning-based Memory Allocation for C++ Server Workloads</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Fri 5/19</td>
+  <td>n/a</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td><span class="due">PR 2: Due</span></td>
+</tr>
+
+<tr>
+  <td align=center>Tu 5/23</td>
+  <td><a href="slides/lec14_storage_file_api.pdf">Storage Devices and File System API<a/></td>
+  <td><a href="http://pages.cs.wisc.edu/~remzi/OSTEP/file-disks.pdf">CH. 37</a>, <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-intro.pdf">CH. 39</a></td>
+  <td><a href="https://dl.acm.org/doi/abs/10.1145/50202.50214">A case for redundant arrays of inexpensive disks (RAID)</a></td>
+  <td><span class="due">HW 3: Due</span><br><a href="hw/hw4.html">HW 4: Out</a></td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Th 5/25</td>
+  <td><a href="slides/lec15_file_system_layout.pdf">File System Disk Layout</a></td>
+  <td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-implementation.pdf">CH. 40</a></td>
+  <td><a href="https://dl.acm.org/doi/pdf/10.1145/945445.945450?casa_token=-gUlnxC14sgAAAAA:W_nlT_PXkU6AQuY949IDAcBurmFYRwnxDbSmtCUB72d0FPJqFzkqn2LCBvwjZXxmMVizErcg1as1">The Google File System</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Tu 5/30</td>
+  <td><a href="slides/lec16_file_caching_reliability.pdf">File Caching and Reliability</a></td>
+  <td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-ffs.pdf">CH. 41</a>, <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/file-journaling.pdf">CH. 42</a></td>
+  <td><a href="https://research.cs.wisc.edu/wind/Publications/iron-sosp05.pdf">IRON File Systems</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Th 6/1</td>
+  <td><a href="slides/lec17_vms.pdf">Virtual Machines</a></td>
+  <td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/vmm-intro.pdf">Appendix B</a></td>
+  <td><a href="https://ieeexplore.ieee.org/abstract/document/1430630?casa_token=JXgjC4N_iAgAAAAA:8Wp-ip4BZPOSN08-T7DlHkPT5dXRRJ85tJgDoOelItMVU3bJwc5_xLOVHmqdoGVU97ILiZ_w2A">Virtual Machine Monitors: Current Technology and Future Trends</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Tu 6/6</td>
+  <td><a href="slides/lec18_protection.pdf">Protection</a></td>
+  <td><a href="https://pages.cs.wisc.edu/~remzi/OSTEP/security-intro.pdf">CH. 53</a>, <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/security-access.pdf">CH. 55</a></td>
+  <td><a href="https://www.usenix.org/system/files/osdi20-narayanan_vikram.pdf">RedLeaf: Isolation and Communication in a Safe Operating System</a></td>
+  <td><span class="due">HW 4: Due</span></td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Th 6/8</td>
+  <td><a href="slides/lec19_final_review.pdf">Final Review</a></td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align=center>Sat 6/10</td>
+  <td>n/a</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td><span class="due">PR 3: Due</span></td>
+</tr>
+
+<tr>
+  <td align=center>M 6/12</td>
+  <td bgcolor="#F5F0E6">Final Exam, 3-6 pm</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</tr>
+
+
+</table>
+</center>
+
+<div class="note">
+Thanks to Geoff Voelker, Yiying Zhang, John Ousterhout, and the faculty who teach
+COS 318 at Princeton whose slides and notes heavily inspired the slides above.
+</div>
+
+
+<h2>Course Organization</h2>
+
+<p> The course is organized as a series of lectures by the instructor,
+discussion sections by the TAs, reading, homework, and project
+assignments, and exams:
+
+<ul>
+<li><b>Lectures:</b> The lectures present the core of the material.
+<li><b>Sections:</b> The discussion sections are
+given by the TAs to answer questions about the lecture, textbook
+readings, homework assignments, and project assignments.
+<li><b>Readings:</b> The readings in the textbook provide preparation
+and a reference for the lectures.  Note, however, that they are
+not a substitute for the lectures.
+<li><b>Homeworks:</b> There are four homework assignments with
+questions taken from the textbook and other materials.  The homework assignments reinforce the readings and lectures.
+<li><b>Projects:</b> There are three programming projects, all using
+the Nachos instructional operating system.
+<li><b>Exams:</b> There are two exams, a midterm exam in the middle of
+the quarter and a final exam at the end of the quarter.  The exams
+will cover the material presented in lecture, the homeworks, and the
+projects.
+</ul>
+
+
+<h2>Homeworks</h2>
+
+<p> The course will have four homeworks, and I will post them as the quarter progresses.  You will submit all your homework electronically via Canvas. We will reduce homework grades by 20% for each day that they are late.
+
+<p> Due to extensive copying on homeworks in the past, we have changed
+  how homeworks are graded.  As long as you submit a technical answer
+  related to the question, you will get full credit for the question.
+  The goal of the homeworks is to give you practice learning the
+  material.  The homework questions both supplement and complement the
+  material from lecture and in the project, and you will also find the
+  homework questions to be useful for practicing for the exams.  We
+  will post solutions to all homeworks after they are submitted, and
+  you can use them for studying as well.  But, even with the
+  solutions, the amount you learn from the homeworks will be directly
+  correlated with your effort working on them.
+
+<p> I encourage you to collaborate on the homeworks: you can learn a
+lot from your fellow students.  Collaboration consists of discussing
+problems with other students and independently writing your own
+answers to the problems based upon those discussions.  As a rule of
+thumb, you should be able to discuss a homework problem in the hall
+with others, go home, and then write up your answer to the problem on
+your own.
+
+<li> <a href="hw/hw1.html">Homework 1</a></li>
+<li> <a href="hw/hw1-sol.html">Homework 1 Solution</a></li>
+<li> <a href="hw/hw2.html">Homework 2</a></li>
+<li> <a href="hw/hw2-sol.html">Homework 2 Solution</a></li>
+<li> <a href="hw/hw3.html">Homework 3</a></li>
+<li> <a href="hw/hw3-sol.html">Homework 3 Solution</a></li>
+<li> <a href="hw/hw4.html">Homework 4</a></li>
+<li> <a href="hw/hw4-sol.html">Homework 4 Solution</a></li>
+
+<h2>Projects</h2>
+
+The course has one tutorial project and three programming projects
+using the Nachos instructional operating system.
+
+<ul>
+<li> <a href="projects/index.html">Project page</a>
+</ul>
+
+<h2>Exams</h2>
+
+The course has two exams: a midterm and a final.  The midterm will
+cover the first half of the class, and the final will focus on the
+second half of the class.
+
+<ul>
+  <li> <a href="exams/midterm-sample.pdf">Sample Midterm</a> from a previous year <a href="exams/midterm-sample-sol.pdf">[Solutions]</a>
+  <li> <a href="exams/final-sample.pdf">Sample Final</a> from a previous year <a href="exams/final-sample-sol.pdf">[Solutions]</a>
+</ul>
+
+<h2>Discussion Sections</h2>
+
+Discussion sections answer questions about the lectures,
+homeworks, projects, and programming environment.  They may also
+  supplement the lectures with additional material.
+
+<h2>Grading</h2>
+
+<p> Your grade for the course will be based on your performance on the
+homeworks, midterm exam, final exam, and projects, as follows:
+
+<ul>
+<li> Homeworks: 6%
+<li> Midterm: 22%
+<li> Final: 28%
+<li> Projects: 44%
+</ul>
+
+<p>
+The <a href="http://www-cse.ucsd.edu/users/elkan/honesty.html">academic
+honesty guidelines</a> outlined by Charles Elkan apply to this course.
+I urge you to resist any temptation to cheat, no matter how desperate
+the situation may seem. If you are in circumstances that you feel
+compel you to cheat, come to me first before you do so.
+
+<div class="footer">
+<hr>
+  <a href="mailto:aousterhout@ucsd.edu?subject=CSE 120">aousterhout@ucsd.edu</a>
+</div>
+
+</div>
+
+</body>
+
+</html>
