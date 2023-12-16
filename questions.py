@@ -1,0 +1,5 @@
+questions = ['How do you transcribe the word "trees" into IPA, considering the recording provided by Will? What specific articulatory features should you pay attention to for accurate transcription?',
+             'In the dataset provided on Wrathdocky language, how would you determine if two sounds are in complementary or contrastive distribution? Can you provide an example from the dataset?',
+             "In the examples given from the Somali language, what is the function of the suffix 'o' in forming plurals? Can you identify any patterns in how this affix is used across different words?",
+             'For the sentence "The bear outside Whole Foods wondered whether the shoppers taste like organic produce," how would you draw a syntax tree? What are the key syntactic constituents in this sentence?',
+             'In the statement “Will took two sodas from the office fridge,” does it entail that “Will has an office”? Explain the difference between entailment and implicature in semantics using this example.',]

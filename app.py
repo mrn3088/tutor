@@ -1,7 +1,19 @@
+# Reference:
+# We reference the following code for the ui/frontend design:
+# https://github.com/krisograbek/streamlit_chatbot_base 
+# https://github.com/AI-Yash/st-chat 
+# Our main reference is from the official document:
+# streamlit official document:
+# https://docs.streamlit.io/library/get-started 
+# some idea & code from llamaindex document:
+# https://docs.llamaindex.ai/en/stable/understanding/putting_it_all_together/chatbots/building_a_chatbot.html
+# the initial idea of tutor come from one of our group member's hackerthon project, but the code are not used
+# https://github.com/mrn3088/tutor-plus-plus 
+# Another important reference is CHATGPT4.0, which help refine code.
+
 import os
 import shutil
 import streamlit as st
-
 
 from api import check_course_exists, get_all_courses
 from model import get_agent
